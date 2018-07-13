@@ -24,5 +24,5 @@ module.exports = {
             'message': 'Use Sass to write css ?'
         }
     },
-    'completeMessage': 'To get started:\n\n  {{^inPlace}}cd {{destDirName}}\n  {{/inPlace}}npm install\n  npm run dev\n\nDocumentation can be found at https://github.com/Plortinus/vue-multiple-pages'
+    'completeMessage': 'To get started:\n\n  {{^inPlace}}cd {{destDirName}}\n  {{/inPlace}}npm install\n  npm run dev'
 }
