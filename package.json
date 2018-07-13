@@ -1,0 +1,9 @@
+{
+  "name": "vue-multi-app",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "A modern Vue.js multiple pages cli",
+  "devDependencies": {
+    "vue-cli": "^2.8.1"
+  }
+}
