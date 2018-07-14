@@ -1,4 +1,6 @@
 import createApp from '@/main.js'
 import App from './index.vue'
 
-createApp(App)
+createApp({
+    render: h => h(App)
+})

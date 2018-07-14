@@ -4,17 +4,11 @@ import axios from 'axios'
 
 Vue.prototype.$http = axios
 
-const createApp = App => {
-    let option = {
-        el    : '#app',
-        render: h => h(App)
-    }
-
-    if (typeof App === "function") {
-        option = Object.assign({}, option, App() || {})
-    }
-
-    new Vue(option)
+const createApp = options => {
+    new Vue({
+        el: '#app',
+        ...options
+    })
 }
 
 export default createApp
