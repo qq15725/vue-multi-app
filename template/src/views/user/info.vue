@@ -6,7 +6,7 @@
     export default {
         data() {
             return {
-                msg: 'login.vue page'
+                msg: 'info.vue page'
             }
         }
     }

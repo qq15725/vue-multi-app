@@ -2,7 +2,6 @@
 const merge             = require('webpack-merge')
 const config            = require('../config')
 const baseWebpackConfig = require('./webpack.base.conf')
-const webpack           = require('webpack')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
     mode     : 'development',
@@ -24,12 +23,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         proxy             : config.dev.proxyTable,
         open              : config.dev.autoOpenBrowser,
         openPage          : '' // webpack-dev-server
-    },
-    plugins  : [
-        new webpack.DefinePlugin({
-            'process.env': config.dev.env
-        })
-    ]
+    }
 })
 
 module.exports = devWebpackConfig
