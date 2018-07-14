@@ -1,9 +1,9 @@
 import createApp from '@/main.js'
-import routes from '@/routers/user.router.js'
+import router from '@/routers/user.router.js'
 
 createApp(() => {
     return {
-        routes,
+        router,
         render: () => {
             return (
                 <div id="app">
