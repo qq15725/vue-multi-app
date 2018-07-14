@@ -89,19 +89,25 @@ exports.extractStyle = function () {
         allChunks: true
     })
 
+    {{#less}}
     const extractLESS = new ExtractTextPlugin({
         filename : filename,
         allChunks: true
     })
-
+    {{/less}}
+    {{#sass}}
     const extractSASS = new ExtractTextPlugin({
         filename : filename,
         allChunks: true
     })
-
+    {{/sass}}
     return [
+        {{#less}}
         extractLESS,
+        {{/less}}
+        {{#sass}}
         extractSASS,
+        {{/sass}}
         extractCSS
     ]
 }

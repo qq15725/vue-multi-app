@@ -21,21 +21,22 @@ const cssOptions = [
     {loader: 'css-loader', options: {sourceMap: true}},
     {loader: 'postcss-loader', options: {sourceMap: true}}
 ]
-
+{{#less}}
 const lessOptions = [...cssOptions, {
     loader : 'less-loader',
     options: {
         sourceMap: true
     }
 }]
-
+{{/less}}
+{{#sass}}
 const sassOptions = [...cssOptions, {
     loader : 'sass-loader',
     options: {
         sourceMap: true
     }
 }]
-
+{{/sass}}
 const eachViewsResult = utils.eachViews(
     path.resolve(__dirname, '../src/views'),
     outputFilename => path.join('views', outputFilename),
@@ -70,14 +71,18 @@ const baseWebpackConfig = {
                             use     : cssOptions,
                             fallback: styleLoaderOptions
                         })),
+                        {{#less}}
                         less   : ['css-hot-loader'].concat(ExtractTextPlugin.extract({
                             use     : lessOptions,
                             fallback: styleLoaderOptions
                         })),
+                        {{/less}}
+                        {{#sass}}
                         scss   : ['css-hot-loader'].concat(ExtractTextPlugin.extract({
                             use     : sassOptions,
                             fallback: styleLoaderOptions
                         })),
+                        {{/sass}}
                         postcss: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
                             use     : cssOptions,
                             fallback: styleLoaderOptions
@@ -105,6 +110,7 @@ const baseWebpackConfig = {
                     fallback: styleLoaderOptions
                 }))
             },
+            {{#less}}
             {
                 test: /\.less$/,
                 use : ['css-hot-loader'].concat(ExtractTextPlugin.extract({
@@ -112,6 +118,8 @@ const baseWebpackConfig = {
                     fallback: styleLoaderOptions
                 }))
             },
+            {{/less}}
+            {{#sass}}
             {
                 test: /\.scss$/,
                 use : ['css-hot-loader'].concat(ExtractTextPlugin.extract({
@@ -119,6 +127,7 @@ const baseWebpackConfig = {
                     fallback: styleLoaderOptions
                 }))
             },
+            {{/sass}}
             {
                 test: /\.html$/,
                 use : [{
