@@ -1,0 +1,25 @@
+<!--无同名 ejs 将使用 views 下 app.ejs-->
+<!--这个地方可以配合后端模板使用 如：-->
+
+<!--{template inc/header}-->
+<% for (var css in htmlWebpackPlugin.files.css) { %>
+<link href="<%=htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+<% } %>
+
+<!--{template inc/header_menu}-->
+
+<div class="main">
+    <!--{template inc/nav}-->
+    <div class="tab-content">
+        <div class="tab-body">
+            <!--{template inc/tab}-->
+            <div id="app"></div>
+        </div>
+    </div>
+</div>
+
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+<script type="text/javascript" src="<%=htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+<% } %>
+
+<!--{template inc/footer}-->

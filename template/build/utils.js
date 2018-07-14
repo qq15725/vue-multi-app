@@ -4,6 +4,7 @@ const glob              = require('glob')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const fs                = require('fs')
+const chalk             = require('chalk')
 
 exports.assetsPath = function (_path) {
     const assetsSubDirectory = process.env.NODE_ENV === 'production'
@@ -42,14 +43,26 @@ exports.eachViews = function (viewsDirectory, outputFilenameCallback = null, tem
             filename = outputFilenameCallback(filename)
         }
 
+        console.log(chalk.green(`Generate filename: ${filename}`))
+
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(chalk.green(
+                'Run here: ' +
+                chalk.blue.underline.bold(
+                    'http://' + config.dev.host + ':' + config.dev.port + '/' + filename
+                )
+            ))
+        }
+
         if (typeof templateCallback === 'function') {
             template = templateCallback(template)
         }
 
-
         if (!fs.existsSync(template)) {
             template = resolve(path.join('src', 'app.ejs'))
         }
+
+        console.log(chalk.green(`Use template: ${template}`))
 
         const htmlConf = {
             filename: filename,

@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --hot --config build/webpack.dev.conf.js",
-    "build": "webpack --mode=production --progress --config build/webpack.prod.conf.js"
+    "build": "webpack --progress --config build/webpack.prod.conf.js"
   },
   "devDependencies": {
     "autoprefixer": "^8.2.0",

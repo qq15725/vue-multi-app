@@ -1,9 +1,10 @@
 'use strict'
-const path = require('path')
+const path    = require('path')
 const config  = require('../config')
 const webpack = require('webpack')
+const utils   = require('./utils')
 
-function resolve (dir) {
+function resolve(dir) {
     return path.join(__dirname, '..', dir)
 }
 
@@ -35,13 +36,20 @@ const sassOptions = [...cssOptions, {
     }
 }]
 
+const eachViewsResult = utils.eachViews(
+    path.resolve(__dirname, '../src/views'),
+    outputFilename => path.join('views', outputFilename),
+    template => process.env.NODE_ENV === 'production'
+        ? template : path.resolve(__dirname, '../src/app.html')
+)
+
 const baseWebpackConfig = {
+    entry       : eachViewsResult.entries,
     output      : {
         path      : config.build.assetsRoot,
-        filename  : '[name].js',
+        filename  : 'js/[name].js',
         publicPath: process.env.NODE_ENV === 'production'
-            ? config.build.assetsPublicPath
-            : config.dev.assetsPublicPath
+            ? config.build.assetsPublicPath : config.dev.assetsPublicPath
     },
     resolve     : {
         extensions: ['.js', '.vue'],
@@ -52,6 +60,7 @@ const baseWebpackConfig = {
     },
     module      : {
         rules: [
+            ...utils.generateModuleRules(process.env.NODE_ENV === 'production' ? config.build.staticPublicPath : ''),
             {
                 test   : /\.vue$/,
                 loader : 'vue-loader',
@@ -138,7 +147,10 @@ const baseWebpackConfig = {
         hints: false
     },
     plugins     : [
-        new webpack.optimize.ModuleConcatenationPlugin()
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        ...utils.extractStyle(),
+        ...eachViewsResult.htmlWebpackPluginArray
     ]
 }
-module.exports          = baseWebpackConfig
+
+module.exports = baseWebpackConfig
