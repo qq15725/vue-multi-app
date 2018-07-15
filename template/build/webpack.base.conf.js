@@ -37,15 +37,13 @@ const sassOptions = [...cssOptions, {
     }
 }]
 {{/sass}}
-const eachViewsResult = utils.eachViews(
-    path.resolve(__dirname, '../src/views'),
-    outputFilename => path.join('views', outputFilename),
-    template => process.env.NODE_ENV === 'production'
-        ? template : path.resolve(__dirname, '../src/app.html')
-)
+
+const entries = utils.getEntries('./src/views/**/*.js')
+
+const htmlWebpackPluginArray = utils.getHtmlWebpackPluginArray(Object.values(entries))
 
 const baseWebpackConfig = {
-    entry       : eachViewsResult.entries,
+    entry       : entries,
     output      : {
         path      : config.build.assetsRoot,
         filename  : 'js/[name].js',
@@ -162,7 +160,7 @@ const baseWebpackConfig = {
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
         ...utils.extractStyle(),
-        ...eachViewsResult.htmlWebpackPluginArray
+        ...htmlWebpackPluginArray
     ]
 }
 

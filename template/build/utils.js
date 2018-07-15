@@ -14,37 +14,37 @@ exports.assetsPath = function (_path) {
     return path.posix.join(assetsSubDirectory, _path)
 }
 
-function resolve(dir) {
-    return path.join(__dirname, '..', dir)
+exports.getModule = function (entry) {
+    entry = entry.split('/').filter(dir => ['.', 'src', 'views'].indexOf(dir) === -1)
+    entry[entry.length - 1] = path.basename(entry[entry.length - 1], path.extname(entry[entry.length - 1]))
+    return entry.join('/')
 }
 
-// support windows path
-function fixPath(_path) {
-    return _path.replace(/\\/g, '/')
+exports.getChunk = function (entry) {
+    return exports.getModule(entry).replace(/\//g, '_')
 }
 
-exports.eachViews = function (viewsDirectory, outputFilenameCallback = null, templateCallback = null) {
-    let entries                = {}
-    let chunks                 = []
-    let htmlWebpackPluginArray = []
+exports.getEntries = function (globPath) {
+    let entries = {}
+    glob.sync(globPath).forEach(function (entry) {
+        entry = entry.replace(/\\/g, '/')
+        entries[exports.getChunk(entry)] = entry
+    })
+    return entries
+}
 
-    viewsDirectory = fixPath(viewsDirectory)
-
-    glob.sync(`${viewsDirectory}/**/*.js`).forEach(filePath => {
-        filePath       = fixPath(filePath)
-        const view     = filePath.split(`${viewsDirectory}/`)[1].replace('.js', '')
-        const chunk    = `_${view.replace(/\//g, '_')}`
-        entries[chunk] = filePath
-        chunks.push(chunk)
-        let filename = `${view}.htm`
-        let template = filePath.replace(/\.js/g, '.ejs')
-
-        if (typeof outputFilenameCallback === 'function') {
-            filename = outputFilenameCallback(filename)
+exports.getHtmlWebpackPluginArray = function (entries) {
+    return entries.map(function (entry) {
+        let module = exports.getModule(entry)
+        let filename = process.env.NODE_ENV === 'production'
+            ? path.join(config.build.assetsRoot, `${module}.htm`) : module
+        let template = process.env.NODE_ENV === 'production'
+            ? path.join(config.dev.assetsRoot, 'views', `${module}.ejs`) : path.join(config.dev.assetsRoot, 'app.html')
+        if (!fs.existsSync(template)) {
+            template = path.join(config.dev.assetsRoot, 'app.ejs')
         }
 
         console.log(chalk.green(`Generate filename: ${filename}`))
-
         if (process.env.NODE_ENV !== 'production') {
             console.log(chalk.green(
                 'Run here: ' +
@@ -53,32 +53,15 @@ exports.eachViews = function (viewsDirectory, outputFilenameCallback = null, tem
                 )
             ))
         }
-
-        if (typeof templateCallback === 'function') {
-            template = templateCallback(template)
-        }
-
-        if (!fs.existsSync(template)) {
-            template = resolve(path.join('src', 'app.ejs'))
-        }
-
         console.log(chalk.green(`Use template: ${template}`))
 
-        const htmlConf = {
+        return new HtmlWebpackPlugin({
             filename: filename,
             template: template,
-            inject  : template.indexOf('app.htm') > -1 ? 'body' : false,
-            chunks  : [config.commonsName, chunk]
-        }
-
-        htmlWebpackPluginArray.push(new HtmlWebpackPlugin(htmlConf))
+            inject  : template.indexOf('.ejs') > -1 ? false : 'body',
+            chunks  : [config.build.assetsCommonsJsName, exports.getChunk(entry)]
+        })
     })
-
-    return {
-        entries,
-        chunks,
-        htmlWebpackPluginArray
-    }
 }
 
 exports.extractStyle = function () {
