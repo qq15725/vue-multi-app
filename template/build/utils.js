@@ -21,7 +21,7 @@ exports.getModule = function (entry) {
 }
 
 exports.getChunk = function (entry) {
-    return exports.getModule(entry).replace(/\//g, '_')
+    return '_' + exports.getModule(entry).replace(/\//g, '_')
 }
 
 exports.getEntries = function (globPath) {

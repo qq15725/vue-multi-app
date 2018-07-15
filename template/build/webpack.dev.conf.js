@@ -22,7 +22,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         noInfo            : true,
         proxy             : config.dev.proxyTable,
         open              : config.dev.autoOpenBrowser,
-        openPage          : '' // webpack-dev-server
+        openPage          : config.dev.openPage || 'webpack-dev-server'
     }
 })
 
